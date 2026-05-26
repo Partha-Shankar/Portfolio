@@ -1,11 +1,17 @@
 import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import gsap from 'gsap';
+import { trackSection, untrackSection } from '../lib/analytics';
 
 export default function About() {
     const sectionRef = useRef(null);
     const textRef = useRef(null);
     const imageContainerRef = useRef(null);
+
+    useEffect(() => {
+        if (sectionRef.current) trackSection('about', sectionRef.current);
+        return () => untrackSection('about');
+    }, []);
 
     useEffect(() => {
         const ctx = gsap.context(() => {

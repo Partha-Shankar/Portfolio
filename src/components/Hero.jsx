@@ -1,9 +1,15 @@
 import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import gsap from 'gsap';
+import { trackSection, untrackSection } from '../lib/analytics';
 
 export default function Hero() {
     const containerRef = useRef(null);
+
+    useEffect(() => {
+        if (containerRef.current) trackSection('hero', containerRef.current);
+        return () => untrackSection('hero');
+    }, []);
 
     useEffect(() => {
         // Parallax effect on the entire hero component
