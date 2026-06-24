@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Lenis from '@studio-freight/lenis';
 import gsap from 'gsap';
@@ -9,20 +9,22 @@ import { resolveGeo } from '../lib/analytics';
 import Hero from '../components/Hero';
 import About from '../components/About';
 import Skills from '../components/Skills';
-import Project from '../components/Project';
-import Mentors from '../components/Mentors';
+
+import HomeProjects from '../components/HomeProjects';
+import Certifications from '../components/Certifications';
 import Contact from '../components/Contact';
+import ThemeToggle, { applyTheme, getInitialTheme } from '../components/ThemeToggle';
 
 gsap.registerPlugin(ScrollTrigger);
+
+// Apply saved theme immediately
+applyTheme(getInitialTheme());
 
 export default function PortfolioLayout() {
     const location = useLocation();
 
     useEffect(() => {
-        // Init PostHog on portfolio routes only
         initPostHog();
-
-        // Fire page_view with geo + browser metadata
         (async () => {
             const geo = await resolveGeo();
             captureEvent('page_view', {
@@ -32,7 +34,6 @@ export default function PortfolioLayout() {
                 distinct_id: getDistinctId(),
                 ...geo,
             });
-            // Also log to our D1 Worker
             try {
                 await fetch('/api/events', {
                     method: 'POST',
@@ -87,10 +88,11 @@ export default function PortfolioLayout() {
                 <Hero />
                 <About />
                 <Skills />
-                <Project />
-                <Mentors />
+                <HomeProjects />
+                <Certifications />
                 <Contact />
             </div>
+            <ThemeToggle />
         </main>
     );
 }

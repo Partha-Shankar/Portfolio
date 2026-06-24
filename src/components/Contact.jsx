@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Linkedin, Github, Instagram, ArrowUpRight, Send, Loader2, CheckCircle } from 'lucide-react';
 import { getDistinctId, captureEvent, identifyUser } from '../lib/posthog';
 import { resolveGeo } from '../lib/analytics';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 const links = [
     { name: 'LinkedIn', icon: <Linkedin size={24} />, url: 'https://linkedin.com/in/parthashankar', color: 'hover:text-blue-500 hover:border-blue-500' },
@@ -12,7 +14,23 @@ const links = [
 
 export default function Contact() {
     const [formData, setFormData] = useState({ name: '', email: '', message: '' });
-    const [status, setStatus] = useState('idle'); // idle, loading, success, error
+    const [status, setStatus] = useState('idle');
+    const footerRef = useRef(null);
+    const orbRef = useRef(null);
+
+    useEffect(() => {
+        const anim = gsap.to(orbRef.current, {
+            y: -80,
+            ease: 'none',
+            scrollTrigger: {
+                trigger: footerRef.current,
+                start: 'top bottom',
+                end: 'bottom top',
+                scrub: 2,
+            },
+        });
+        return () => anim.scrollTrigger?.kill();
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -50,8 +68,8 @@ export default function Contact() {
     };
 
     return (
-        <footer id="contact" className="w-full py-24 px-6 md:px-24 bg-black relative border-t border-white/5 overflow-hidden">
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] md:w-[40vw] md:h-[40vw] bg-primary/5 rounded-full blur-[150px] pointer-events-none" />
+        <footer ref={footerRef} id="contact" className="w-full py-24 px-6 md:px-24 bg-black relative border-t border-white/5 overflow-hidden">
+            <div ref={orbRef} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] md:w-[40vw] md:h-[40vw] bg-primary/5 rounded-full blur-[150px] pointer-events-none" />
 
             <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center lg:items-start justify-between gap-16 relative z-10">
                 

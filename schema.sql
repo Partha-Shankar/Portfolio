@@ -27,3 +27,10 @@ CREATE INDEX IF NOT EXISTS idx_events_session  ON events(distinct_id);
 CREATE INDEX IF NOT EXISTS idx_events_time     ON events(created_at);
 CREATE INDEX IF NOT EXISTS idx_contacts_email  ON contacts(email);
 CREATE INDEX IF NOT EXISTS idx_contacts_time   ON contacts(created_at);
+
+-- Project live URL management (admin-controlled)
+CREATE TABLE IF NOT EXISTS project_links (
+    project_id  TEXT PRIMARY KEY,
+    live_url    TEXT,
+    updated_at  TEXT DEFAULT (datetime('now'))
+);

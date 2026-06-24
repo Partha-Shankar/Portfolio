@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import Lenis from '@studio-freight/lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -6,15 +6,19 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Hero from './components/Hero';
 import About from './components/About';
 import Skills from './components/Skills';
-import Project from './components/Project';
-import Mentors from './components/Mentors';
+
+import HomeProjects from './components/HomeProjects';
+import Certifications from './components/Certifications';
 import Contact from './components/Contact';
+import ThemeToggle, { applyTheme, getInitialTheme } from './components/ThemeToggle';
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Apply saved theme immediately before first render
+applyTheme(getInitialTheme());
+
 function App() {
     useEffect(() => {
-        // Initialize Lenis for smooth scrolling
         const lenis = new Lenis({
             duration: 1.2,
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -43,8 +47,6 @@ function App() {
     return (
         <main className="relative bg-gray-950 min-h-screen text-gray-50 overflow-hidden font-sans">
             <div className="fixed inset-0 z-0 bg-grid-pattern opacity-20 pointer-events-none mix-blend-screen" />
-
-            {/* Decorative gradient orbs */}
             <div className="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-primary/20 blur-[120px] pointer-events-none" />
             <div className="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-secondary/20 blur-[120px] pointer-events-none" />
 
@@ -52,10 +54,12 @@ function App() {
                 <Hero />
                 <About />
                 <Skills />
-                <Project />
-                <Mentors />
+                <HomeProjects />
+                <Certifications />
                 <Contact />
             </div>
+
+            <ThemeToggle />
         </main>
     );
 }

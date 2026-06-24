@@ -1,38 +1,67 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const skillsData = [
-    { category: 'Languages', items: ['Python', 'C++', 'JavaScript', 'SQL'] },
-    { category: 'Web Technologies', items: ['HTML5', 'CSS3', 'React.js', 'Node.js', 'Express.js', 'Flask', 'Bootstrap', 'Tailwind CSS', 'REST APIs'] },
-    { category: 'AI & ML', items: ['PyTorch', 'TensorFlow', 'Transformers', 'LangChain', 'OpenCV', 'Computer Vision', 'Deep Learning', 'RAG', 'Vector DBs'] },
-    { category: 'Databases & Cloud', items: ['MongoDB', 'MySQL', 'PostgreSQL', 'AWS (EC2, S3, Lambda)', 'GCP', 'Docker', 'CI/CD Pipelines'] },
-    { category: 'Tools', items: ['Git', 'GitHub', 'VS Code', 'Postman', 'Linux', 'Jupyter', 'NumPy', 'Pandas', 'Scikit-learn'] },
+    { category: 'Languages', items: ['Python', 'JavaScript', 'TypeScript', 'Java', 'C++', 'SQL'] },
+    { category: 'Frontend', items: ['React 19', 'SvelteKit', 'Next.js', 'Three.js', 'D3.js', 'Leaflet.js', 'Framer Motion', 'Tailwind CSS', 'Bootstrap'] },
+    { category: 'Backend & APIs', items: ['Node.js', 'Express.js', 'FastAPI', 'Flask', 'Server-Sent Events', 'Cloudflare Workers', 'Edge Computing'] },
+    { category: 'AI & ML', items: ['PyTorch', 'Scikit-learn', 'XGBoost', 'LightGBM', 'TabPFN', 'Vision Transformers', 'OpenCV', 'SHAP', 'Grad-CAM++', 'LangChain', 'Transfer Learning', 'Computer Vision'] },
+    { category: 'Databases', items: ['PostgreSQL', 'MongoDB', 'MySQL', 'SQLite', 'Cloudflare D1', 'Prisma ORM', 'Mongoose'] },
+    { category: 'Cloud & DevOps', items: ['AWS (EC2, S3, Lambda)', 'Cloudflare Pages', 'Cloudflare R2', 'Neon PostgreSQL', 'Git', 'GitHub', 'Vite'] },
 ];
 
 export default function Skills() {
-    return (
-        <section className="w-full py-24 px-6 md:px-24 bg-gray-900/40 relative border-t border-b border-white/5">
-            <div className="max-w-7xl mx-auto z-10 relative">
-                <h2 className="text-4xl md:text-5xl font-extrabold font-heading text-white text-center mb-16">
-                    TECHNICAL <span className="text-secondary glow-text">ARSENAL</span>
-                </h2>
+    const sectionRef = useRef(null);
+    const headingRef = useRef(null);
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {skillsData.map((skillGroup, index) => (
+    useEffect(() => {
+        if (!headingRef.current) return;
+        const anim = gsap.fromTo(
+            headingRef.current,
+            { y: 40, opacity: 0.5 },
+            {
+                y: 0, opacity: 1,
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: sectionRef.current,
+                    start: 'top 90%',
+                    end: 'top 40%',
+                    scrub: 1,
+                },
+            }
+        );
+        return () => anim.scrollTrigger?.kill();
+    }, []);
+
+    return (
+        <section ref={sectionRef} className="w-full py-28 px-6 md:px-16 lg:px-24 border-t border-white/5 overflow-hidden">
+            <div className="max-w-7xl mx-auto">
+
+                <div ref={headingRef} className="mb-14">
+                    <p className="text-xs font-semibold tracking-[0.2em] uppercase text-secondary mb-4">Skills</p>
+                    <h2 className="text-4xl md:text-5xl font-black font-heading">Technical Arsenal</h2>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    {skillsData.map((group, index) => (
                         <motion.div
                             key={index}
-                            initial={{ opacity: 0, scale: 0.9, y: 30 }}
-                            whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                            viewport={{ once: true, margin: "-10%" }}
-                            transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
-                            className="p-8 rounded-3xl bg-black/40 backdrop-blur-sm border border-white/10 hover:border-secondary/50 transition-colors shadow-2xl"
+                            initial={{ opacity: 0, y: 30 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true, margin: '-8%' }}
+                            transition={{ duration: 0.5, delay: index * 0.07, ease: 'easeOut' }}
+                            className="p-6 rounded-2xl border border-white/8 bg-white/[0.02] hover:border-white/15 transition-colors duration-300"
                         >
-                            <h3 className="text-2xl font-bold text-white mb-6 uppercase tracking-wider">{skillGroup.category}</h3>
-                            <div className="flex flex-wrap gap-3">
-                                {skillGroup.items.map((item, i) => (
+                            <h3 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-4">{group.category}</h3>
+                            <div className="flex flex-wrap gap-2">
+                                {group.items.map((item, i) => (
                                     <span
                                         key={i}
-                                        className="px-4 py-2 bg-gray-800 text-gray-300 rounded-lg text-sm font-semibold hover:bg-secondary hover:text-white transition-all duration-300 cursor-default"
+                                        className="px-3 py-1 bg-gray-900 text-gray-300 rounded-md text-xs font-medium border border-white/5 hover:border-secondary/40 transition-colors duration-200 cursor-default"
                                     >
                                         {item}
                                     </span>

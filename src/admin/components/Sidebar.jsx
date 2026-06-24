@@ -2,13 +2,14 @@ import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
     LayoutDashboard, BarChart2, Users, Settings,
-    ShieldCheck, LogOut, Zap,
+    ShieldCheck, LogOut, Zap, FolderOpen,
 } from 'lucide-react';
 
 const navItems = [
     { to: '/internal-ops/dashboard', icon: <LayoutDashboard size={18} />, label: 'Overview' },
     { to: '/internal-ops/analytics', icon: <BarChart2 size={18} />, label: 'Analytics' },
     { to: '/internal-ops/users', icon: <Users size={18} />, label: 'Contacts' },
+    { to: '/internal-ops/projects', icon: <FolderOpen size={18} />, label: 'Projects' },
     { to: '/internal-ops/settings', icon: <Settings size={18} />, label: 'Settings' },
 ];
 

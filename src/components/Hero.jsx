@@ -1,10 +1,16 @@
 import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { trackSection, untrackSection } from '../lib/analytics';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Hero() {
     const containerRef = useRef(null);
+    const textRef = useRef(null);
+    const orb1Ref = useRef(null);
+    const orb2Ref = useRef(null);
 
     useEffect(() => {
         if (containerRef.current) trackSection('hero', containerRef.current);
@@ -12,80 +18,110 @@ export default function Hero() {
     }, []);
 
     useEffect(() => {
-        // Parallax effect on the entire hero component
-        gsap.to(containerRef.current, {
-            y: 200,
-            opacity: 0,
-            scrollTrigger: {
-                trigger: containerRef.current,
-                start: "top top",
-                end: "bottom top",
-                scrub: true,
-            }
-        });
+        const ctx = gsap.context(() => {
+            gsap.to(textRef.current, {
+                y: -80,
+                opacity: 0,
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: containerRef.current,
+                    start: 'top top',
+                    end: 'bottom top',
+                    scrub: 1.5,
+                },
+            });
+            gsap.to(orb1Ref.current, {
+                y: -160,
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: containerRef.current,
+                    start: 'top top',
+                    end: 'bottom top',
+                    scrub: 2,
+                },
+            });
+            gsap.to(orb2Ref.current, {
+                y: 100,
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: containerRef.current,
+                    start: 'top top',
+                    end: 'bottom top',
+                    scrub: 2.5,
+                },
+            });
+        }, containerRef);
+        return () => ctx.revert();
     }, []);
 
     return (
         <section
             ref={containerRef}
-            className="relative w-full min-h-screen flex flex-col justify-center items-center px-4 overflow-hidden"
+            className="relative w-full min-h-screen flex flex-col justify-center px-6 md:px-16 lg:px-24 overflow-hidden"
         >
-            <motion.div
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1, ease: 'easeOut' }}
-                className="z-10 text-center flex flex-col items-center"
-            >
+            <div ref={textRef} className="z-10 max-w-4xl w-full" data-no-transition>
                 <motion.p
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.8, delay: 0.2 }}
-                    className="text-primary font-bold tracking-[0.2em] uppercase text-sm mb-4"
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.1 }}
+                    className="text-xs font-semibold tracking-[0.25em] uppercase text-primary mb-6"
                 >
-                    Developer & AI Enthusiast
+                    Full Stack Engineer · AI/ML Developer · Cloud
                 </motion.p>
 
-                <h1 className="text-6xl md:text-8xl font-black font-heading mb-6 tracking-tight drop-shadow-2xl">
-                    Hi, I'm <br className="md:hidden" />
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-secondary to-accent glow-text">
-                        Partha Shankar
+                <motion.h1
+                    initial={{ opacity: 0, y: 24 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.2 }}
+                    className="text-6xl md:text-8xl font-black font-heading leading-[1.0] tracking-tight mb-8"
+                >
+                    Partha
+                    <br />
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
+                        Shankar.
                     </span>
-                </h1>
+                </motion.h1>
 
                 <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 1, delay: 0.8 }}
-                    className="text-gray-400 text-lg md:text-2xl max-w-2xl font-light"
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.4 }}
+                    className="text-gray-400 text-base md:text-xl max-w-xl leading-relaxed mb-10"
                 >
-                    Building intelligent systems, scalable full-stack applications, and the future of digital management.
+                    Building intelligent AI systems, full-stack applications, and cloud-native platforms that solve real engineering problems.
                 </motion.p>
 
                 <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 1, delay: 1.2 }}
-                    className="mt-12 flex space-x-6"
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.6 }}
+                    className="flex flex-wrap gap-4"
                 >
-                    <a href="#about" className="px-8 py-4 rounded-full bg-white text-gray-950 font-bold hover:bg-gray-200 transition-colors shadow-[0_0_20px_rgba(255,255,255,0.3)]">
-                        Explore My Work
+                    <a
+                        href="#projects"
+                        className="px-6 py-3 rounded-lg bg-white text-gray-950 font-semibold text-sm hover:bg-gray-100 transition-colors"
+                    >
+                        View Projects
                     </a>
-                    <a href="#project" className="px-8 py-4 rounded-full border border-gray-600 hover:border-white transition-colors duration-300">
-                        View Project
+                    <a
+                        href="#contact"
+                        className="px-6 py-3 rounded-lg border border-gray-700 text-gray-300 font-semibold text-sm hover:border-gray-400 hover:text-white transition-colors"
+                    >
+                        Get in Touch
                     </a>
                 </motion.div>
-            </motion.div>
+            </div>
 
-            {/* Floating 3D elements abstraction */}
-            <motion.div
-                animate={{ y: [0, -20, 0], rotate: [0, 5, 0] }}
-                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute right-[10%] top-[20%] w-32 h-32 rounded-full border border-primary/30 blur-sm pointer-events-none"
+            {/* Parallax depth orbs */}
+            <div
+                ref={orb1Ref}
+                className="absolute right-[5%] top-[15%] w-64 h-64 md:w-96 md:h-96 rounded-full pointer-events-none"
+                style={{ background: 'radial-gradient(circle, rgba(59,130,246,0.07) 0%, transparent 70%)' }}
             />
-            <motion.div
-                animate={{ y: [0, 30, 0], rotate: [0, -10, 0] }}
-                transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                className="absolute left-[10%] bottom-[20%] w-48 h-48 rounded-full border border-secondary/20 blur-md pointer-events-none"
+            <div
+                ref={orb2Ref}
+                className="absolute left-[5%] bottom-[10%] w-72 h-72 md:w-[28rem] md:h-[28rem] rounded-full pointer-events-none"
+                style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.06) 0%, transparent 70%)' }}
             />
         </section>
     );

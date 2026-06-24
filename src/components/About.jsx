@@ -1,12 +1,16 @@
 import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { trackSection, untrackSection } from '../lib/analytics';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function About() {
     const sectionRef = useRef(null);
     const textRef = useRef(null);
-    const imageContainerRef = useRef(null);
+    const decorRef1 = useRef(null);
+    const decorRef2 = useRef(null);
 
     useEffect(() => {
         if (sectionRef.current) trackSection('about', sectionRef.current);
@@ -15,28 +19,39 @@ export default function About() {
 
     useEffect(() => {
         const ctx = gsap.context(() => {
-            gsap.from(textRef.current.children, {
+            gsap.from(Array.from(textRef.current.children), {
                 opacity: 0,
-                x: -50,
-                duration: 1,
-                stagger: 0.2,
-                scrollTrigger: {
-                    trigger: sectionRef.current,
-                    start: 'top 70%',
-                    toggleActions: 'play none none reverse',
-                }
-            });
-
-            gsap.from(imageContainerRef.current, {
-                opacity: 0,
-                scale: 0.8,
-                duration: 1.2,
+                y: 40,
+                duration: 0.9,
+                stagger: 0.15,
                 ease: 'power3.out',
                 scrollTrigger: {
                     trigger: sectionRef.current,
-                    start: 'top 70%',
+                    start: 'top 72%',
                     toggleActions: 'play none none reverse',
-                }
+                },
+            });
+
+            gsap.to(decorRef1.current, {
+                y: -70,
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: sectionRef.current,
+                    start: 'top bottom',
+                    end: 'bottom top',
+                    scrub: 2,
+                },
+            });
+
+            gsap.to(decorRef2.current, {
+                y: 70,
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: sectionRef.current,
+                    start: 'top bottom',
+                    end: 'bottom top',
+                    scrub: 2.5,
+                },
             });
         }, sectionRef);
 
@@ -47,67 +62,62 @@ export default function About() {
         <section
             ref={sectionRef}
             id="about"
-            className="w-full min-h-screen py-24 px-4 md:px-24 flex flex-col justify-center items-center relative"
+            className="w-full py-28 px-6 md:px-16 lg:px-24 relative overflow-hidden"
         >
-            <div className="max-w-7xl w-full grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-                {/* Left side: Text content */}
-                <div ref={textRef} className="space-y-8">
-                    <div>
-                        <h2 className="text-4xl md:text-6xl font-black font-heading mb-4 inline-block relative">
-                            Passion Meets
-                            <span className="block text-primary">Precision</span>
-                            <div className="absolute -bottom-2 left-0 w-24 h-2 bg-gradient-to-r from-primary to-secondary rounded-full" />
-                        </h2>
+            {/* Parallax depth blobs */}
+            <div ref={decorRef1} className="absolute -top-20 right-0 w-80 h-80 bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
+            <div ref={decorRef2} className="absolute -bottom-20 left-0 w-72 h-72 bg-secondary/10 rounded-full blur-[100px] pointer-events-none" />
+
+            <div className="max-w-6xl mx-auto">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start">
+
+                    {/* Left: Stats block */}
+                    <div className="grid grid-cols-2 gap-4">
+                        {[
+                            { value: '9.07', label: 'CGPA', sub: 'out of 10.0' },
+                            { value: '3rd', label: 'Year', sub: 'B.E. CSE · 2023–2027' },
+                            { value: '7+', label: 'Projects', sub: 'Production-grade' },
+                            { value: '4', label: 'AWS Certs', sub: 'Cloud Quest badges' },
+                        ].map((stat, i) => (
+                            <motion.div
+                                key={i}
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.5, delay: i * 0.1 }}
+                                className="p-6 rounded-2xl border border-white/8 bg-white/[0.02] hover:border-primary/30 transition-colors duration-300"
+                            >
+                                <p className="text-3xl font-black font-heading text-white mb-1">{stat.value}</p>
+                                <p className="text-sm font-bold text-gray-400 uppercase tracking-wider">{stat.label}</p>
+                                <p className="text-xs text-gray-600 mt-0.5">{stat.sub}</p>
+                            </motion.div>
+                        ))}
                     </div>
 
-                    <p className="text-xl text-gray-300 font-light leading-relaxed">
-                        I'm <span className="text-white font-semibold">Partha Shankar</span>, a 3rd-year Computer Science student at
-                        <span className="text-accent underline decoration-accent/30 underline-offset-4 ml-1">
-                            Nagarjuna College of Engineering and Technology
-                        </span>.
-                    </p>
+                    {/* Right: Text */}
+                    <div ref={textRef} className="space-y-6">
+                        <div>
+                            <p className="text-xs font-semibold tracking-[0.2em] uppercase text-primary mb-4">About</p>
+                            <h2 className="text-4xl md:text-5xl font-black font-heading leading-[1.05] mb-6">
+                                Engineering<br />
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
+                                    with purpose.
+                                </span>
+                            </h2>
+                        </div>
 
-                    <div className="space-y-4 text-gray-400">
-                        <p>
-                            Being a developer is more than writing code; it's about solving real-world puzzles. My journey is fueled by a relentless curiosity about how systems function at scale and how AI can be integrated to create seamless user experiences.
+                        <p className="text-gray-300 text-base leading-relaxed">
+                            I'm <span className="text-white font-semibold">Partha Shankar</span>, a Computer Science Engineering student at Nagarjuna College of Engineering and Technology, Bengaluru — specialising in AI/ML, full-stack web development, and cloud-native architecture.
                         </p>
-                        <p>
-                            Currently specializing in full-stack development and exploring the frontiers of Machine Learning. When I'm not debugging, you'll find me brainstorming the next big thing in college management systems or architectural innovations.
+
+                        <p className="text-gray-500 text-base leading-relaxed">
+                            My work spans enterprise management platforms, healthcare AI systems with explainability, serverless cloud infrastructure, and large-scale event management systems. Every project I build is production-oriented, with a focus on security, architecture, and real-world utility.
+                        </p>
+
+                        <p className="text-gray-500 text-base leading-relaxed">
+                            Currently exploring intersections between clinical AI, edge computing, and scalable software architecture.
                         </p>
                     </div>
-
-                    <div className="grid grid-cols-2 gap-4 pt-4">
-                        <div className="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-primary/50 transition-colors">
-                            <h4 className="text-primary font-bold text-2xl">3rd Year</h4>
-                            <p className="text-xs uppercase tracking-widest text-gray-500">Education</p>
-                        </div>
-                        <div className="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-secondary/50 transition-colors">
-                            <h4 className="text-secondary font-bold text-2xl">CSE</h4>
-                            <p className="text-xs uppercase tracking-widest text-gray-500">Specialization</p>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Right side: Visual representation */}
-                <div
-                    ref={imageContainerRef}
-                    className="relative group"
-                >
-                    <div className="aspect-square w-full max-w-[500px] mx-auto relative z-10 rounded-2xl overflow-hidden bg-gradient-to-br from-gray-800 to-gray-950 border border-white/10 shadow-2xl">
-                        {/* If user provides an image, replace this div with an <img> tag */}
-                        <div className="absolute inset-0 flex items-center justify-center p-8">
-                            <div className="text-center">
-                                <span className="text-8xl mb-4 block">👨‍💻</span>
-                                <p className="text-gray-500 italic">"Imagination is the only limit to innovation."</p>
-                            </div>
-                        </div>
-                        {/* Animated overlay */}
-                        <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    </div>
-
-                    {/* Background decorations */}
-                    <div className="absolute -top-10 -right-10 w-40 h-40 bg-primary/20 rounded-full blur-3xl -z-1" />
-                    <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-secondary/20 rounded-full blur-3xl -z-1" />
                 </div>
             </div>
         </section>
